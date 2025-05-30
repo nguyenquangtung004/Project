@@ -11,6 +11,7 @@ builder.Services.AddSingleton<IMongoClient>(sp => new MongoClient(builder.Config
 // Đăng ký BookService
 // AddScoped: một instance mới sẽ được tạo cho mỗi HTTP request
 builder.Services.AddScoped<BookService>();
+builder.Services.AddScoped<AuthorService>();
 
 // Add services to the container.
 

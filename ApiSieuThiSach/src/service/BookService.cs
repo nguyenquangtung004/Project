@@ -8,11 +8,13 @@ namespace ApiSieuThiSach.sevice
     public class BookService
     {
         private readonly IMongoCollection<Book> _booksCollection;
+        private readonly AuthorService _authorService;
         private readonly ILogger<BookService> _logger;
 
-        public BookService(IOptions<MongoDbSettings> mongoDbSettings, ILogger<BookService> logger)
+        public BookService(IOptions<MongoDbSettings> mongoDbSettings,AuthorService authorService, ILogger<BookService> logger)
         {
             _logger = logger;
+            _authorService = authorService;
             try
             {
                 var mongoClient = new MongoClient(mongoDbSettings.Value.ConnectionString);
@@ -30,6 +32,22 @@ namespace ApiSieuThiSach.sevice
 
         public async Task<Book?> CreateAsync(Book newBook)
         {
+            if (newBook.AuthorMongoIds == null || !newBook.AuthorMongoIds.Any())
+            {
+                _logger.LogWarning("Không có ID tác giả nào được cung cấp cho sách : {Title}", newBook.Title);
+                return null;
+            }
+
+            foreach (var item in newBook.AuthorMongoIds)
+            {
+                var authorExists = await _authorService.AuthorExistsAsync(item);
+                if (!authorExists)
+                {
+                    _logger.LogWarning("Không tìm thấy tác giả với id : {AuthorId} cho sách :{Title}", item, newBook.Title);
+                    return null;
+                }
+                    
+            }
             try
             {
                 newBook.CreatedAt = DateTime.UtcNow;
