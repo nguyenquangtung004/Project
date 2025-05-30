@@ -50,7 +50,7 @@ namespace ApiSieuThiSach.Controllers
                 var apiResponse = new ApiResponse<Book>(
                     code: StatusCodes.Status201Created,
                     message: "Sách đã được tạo thành công.",
-                    data: createdBook // Truyền đối tượng sách đã tạo vào đây
+                    data: null
                 );
 
                 return StatusCode(StatusCodes.Status201Created, apiResponse);

@@ -53,7 +53,7 @@ namespace ApiSieuThiSach.Controllers
                 var apiResponse = new ApiResponse<Author>(
                     code: StatusCodes.Status201Created,
                     message: "Tác giả đã được tạo thành công.",
-                    data: createdAuthor
+                    data: null
                 );
 
                 // Trả về 201 Created cùng với thông tin tác giả đã tạo.
