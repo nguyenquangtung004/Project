@@ -37,24 +37,45 @@ namespace ApiSieuThiSach.sevice
                 return false;
             }
 
-             if (!ObjectId.TryParse(AuthorMongoIds, out _))
+            if (!ObjectId.TryParse(AuthorMongoIds, out _))
             {
                 _logger.LogWarning("AuthorExistsAsync: ID tác giả không hợp lệ (không phải ObjectId): {AuthorId}", AuthorMongoIds);
-                return false; 
+                return false;
             }
 
             try
             {
                 // Giả sử model Author của bạn có thuộc tính _idAuthors được đánh dấu [BsonId]
-                var filter = Builders<Author>.Filter.Eq(a => a._idAuthors, AuthorMongoIds); 
+                var filter = Builders<Author>.Filter.Eq(a => a._idAuthors, AuthorMongoIds);
                 var count = await _authorsCollection.CountDocumentsAsync(filter);
                 return count > 0; // Trả về true nếu tìm thấy ít nhất 1 document, ngược lại false
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "AuthorExistsAsync: Lỗi khi kiểm tra sự tồn tại của tác giả với ID: {AuthorId}", AuthorMongoIds);
-                return false; 
+                return false;
             }
-         }
+        }
+
+        public async Task<Author?> CreateAuthorAsync(Author newAuthor)
+        {
+
+            try
+            {
+                newAuthor.CreatedAt = DateTime.UtcNow;
+                newAuthor.UpdatedAt = DateTime.UtcNow;
+
+                await _authorsCollection.InsertOneAsync(newAuthor);
+
+                _logger.LogInformation("Đã tạo thành công tác giả  với DisplayAuthorId:{DisplayAuthorId}", newAuthor.DisplayAuthorId, newAuthor._idAuthors);
+                return newAuthor;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi ghi MongoDB khi tạo tác giả mới với DisplayAuthorId {DisplayAuthorId}: {ErrorMessage}", newAuthor.DisplayAuthorId, ex.Message);
+                return null;
+            }
+
+        }
     }
 }
