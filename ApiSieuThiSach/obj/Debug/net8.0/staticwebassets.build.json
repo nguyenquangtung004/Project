@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "MNS5uCKn9a9poOR2FG9SahLhEWYV3Qt6ss2eSevgVkM=",
+  "Source": "ApiSieuThiSach",
+  "BasePath": "_content/ApiSieuThiSach",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
