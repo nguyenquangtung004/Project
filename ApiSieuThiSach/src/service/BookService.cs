@@ -37,13 +37,13 @@ namespace ApiSieuThiSach.sevice
 
                 await _booksCollection.InsertOneAsync(newBook);
 
-                _logger.LogInformation("Đã tạo thành công với sách với id sách là :{BookId}", newBook.idBook);
+                _logger.LogInformation("Đã tạo thành công với sách với id sách là :{BookId}", newBook.DisplayBookId);
                 return newBook;
 
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Lỗi khi tạo sách mới với tiêu đề {BookTitle}", newBook.Title);
+                _logger.LogError(ex, "Lỗi khi tạo sách mới với tiêu đề {Title}", newBook.Title);
                 return null;
             }
         }

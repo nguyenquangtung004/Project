@@ -36,13 +36,13 @@ namespace ApiSieuThiSach.Controllers
             {
                 var createdBook = await _bookService.CreateAsync(newBook);
 
-                if (createdBook == null || string.IsNullOrEmpty(createdBook.id))
+                if (createdBook == null || string.IsNullOrEmpty(createdBook._idBooks))
                 {
                     _logger.LogError("Book creation failed in service for title: {BookTitle}", newBook.Title);
                     return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<object>(StatusCodes.Status500InternalServerError, "Đã có lỗi xảy ra khi tạo sách.",null));
                 }
 
-                _logger.LogInformation("Book created successfully with ID: {BookId}", createdBook.idBook);
+                _logger.LogInformation("Đã thêm sách với số thứ tự: {BookId}", createdBook.DisplayBookId);
                 // Trả về 201 Created cùng với thông tin sách đã tạo và URL để truy cập sách đó (nếu có endpoint GetById)
                 // Hiện tại chưa có GetBookById, nên ta chỉ trả về sách đã tạo.
                 // return CreatedAtAction(nameof(GetBookById), new { id = createdBook.Id }, createdBook);

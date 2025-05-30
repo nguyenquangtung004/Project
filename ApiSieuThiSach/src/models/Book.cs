@@ -7,25 +7,27 @@ namespace ApiSieuThiSach.models
 {
     public class Book
     {
-        [BsonId] //IMPORTANT: Đánh dấu đây là id mongoDb
-        [BsonRepresentation(BsonType.ObjectId)] //Lưu trữ dưới dạng ObjectId trong db, nhưng là string trong C#
-        public string? id { get; set; }
+        [BsonId] 
+        [BsonRepresentation(BsonType.ObjectId)] 
+        public string? _idBooks { get; set; }
 
-        [BsonElement("BookId")]
-        [Required(ErrorMessage ="Số id thứ tự sách là bắt buộc")]
-        public string? idBook { get; set;}
-        
+        [BsonElement("DisplayBookId")]
+        [Required(ErrorMessage = "Mã hiển thị sách là bắt buộc")]
+        [StringLength(50, ErrorMessage = "Mã hiển thị sách không quá 50 ký tự.")]
+        public string DisplayBookId { get; set; } = null!;
+
         [BsonElement("Title")]
         [Required(ErrorMessage = "Tiêu đề sách là bắt buộc. ")]
         [StringLength(200, MinimumLength = 1, ErrorMessage = "Tiêu đề từ 1 đến 200 kí tự")]
-        public string Title { get; set; } = null; //Null để tránh warning nullable , sẽ được validate bởi required
+        public string Title { get; set; } = null;
 
         [BsonElement("Subtitle")]
         [StringLength(300, ErrorMessage = "Phụ đề không quá 300 kí tự")]
         public string Subtitle { get; set; }
 
-        [Required(ErrorMessage = "Tác giả sách là bắt buộc")]
-        public List<String> Authors { get; set; } = new List<string>();
+        [BsonElement("AuthorMongoIds")] 
+        [Required(ErrorMessage = "Ít nhất một ID tác giả là bắt buộc.")]
+        public List<string> AuthorMongoIds { get; set; } = new List<string>();
 
         [BsonElement("Publisher")]
         public String? Publisher { get; set; }
@@ -68,35 +70,35 @@ namespace ApiSieuThiSach.models
         [Required(ErrorMessage = "Ngôn ngữ là bắt buộc.")]
         public string Language { get; set; } = null!;
 
-        [BsonElement("Format")] // Ví dụ: "Bìa cứng", "Bìa mềm", "Ebook"
+        [BsonElement("Format")] 
         public string? Format { get; set; }
 
         [BsonElement("Price")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Giá phải lớn hơn 0.")]
         public decimal? Price { get; set; }
 
-        [BsonElement("CurrencyCode")] // Ví dụ: "VND", "USD"
+        [BsonElement("CurrencyCode")] 
         public string? CurrencyCode { get; set; }
 
-        [BsonElement("Availability")] // Ví dụ: "Còn hàng", "Hết hàng", "Đặt trước"
+        [BsonElement("Availability")]
         public string? Availability { get; set; }
 
         [BsonElement("StockQuantity")]
         public int? StockQuantity { get; set; }
 
-        [BsonElement("Dimensions")] // Kích thước vật lý
+        [BsonElement("Dimensions")] 
         public BookDimensions? Dimensions { get; set; }
-        
-         [BsonElement("Weight")] // Cân nặng (ví dụ: tính bằng gram)
+
+        [BsonElement("Weight")] 
         public double? Weight { get; set; }
 
         [BsonElement("Edition")]
-        public string? Edition { get; set; } // Lần tái bản
+        public string? Edition { get; set; } 
 
         [BsonElement("Series")]
-        public BookSeriesInfo? Series { get; set; } // Thông tin bộ sách nếu có
+        public BookSeriesInfo? Series { get; set; } 
 
-        [BsonIgnoreIfNull] // Không lưu vào DB nếu giá trị là null
+        [BsonIgnoreIfNull] 
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 
         [BsonIgnoreIfNull]
@@ -105,14 +107,23 @@ namespace ApiSieuThiSach.models
 
     public class BookSeriesInfo
     {
-        public double? Height { get; set; } // cm
-        public double? Width { get; set; }  // cm
-        public double? Thickness { get; set; } // cm
+        public double? Height { get; set; } 
+        public double? Width { get; set; }  
+        public double? Thickness { get; set; } 
     }
 
     public class BookDimensions
     {
         public string Name { get; set; } = null!;
         public int? VolumeNumber { get; set; }
+    }
+    
+    public class EmbeddedAuthorInfo
+    {
+        [BsonRepresentation(BsonType.ObjectId)] 
+        public string id { get; set; } = null!;
+
+        public string authorsId { get; set; } = null!;
+        public string FullName { get; set; } = null!; 
     }
 }
