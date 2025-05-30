@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiSieuThiSach.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")] // Route sẽ là /api/books
+    [Route("api/web/[controller]")] // Route sẽ là /api/books
     public class BooksController : ControllerBase
     {
         private readonly BookService _bookService;

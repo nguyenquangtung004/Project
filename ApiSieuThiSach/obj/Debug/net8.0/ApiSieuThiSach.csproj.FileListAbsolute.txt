@@ -39,3 +39,4 @@ D:\Project\C#\ASP.NET\Project\ApiSieuThiSach\bin\Debug\net8.0\MongoDB.Driver.dll
 D:\Project\C#\ASP.NET\Project\ApiSieuThiSach\bin\Debug\net8.0\SharpCompress.dll
 D:\Project\C#\ASP.NET\Project\ApiSieuThiSach\bin\Debug\net8.0\Snappier.dll
 D:\Project\C#\ASP.NET\Project\ApiSieuThiSach\bin\Debug\net8.0\ZstdSharp.dll
+D:\Project\C#\ASP.NET\Project\ApiSieuThiSach\obj\Debug\net8.0\ApiSieuThiSach.sourcelink.json

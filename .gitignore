@@ -296,3 +296,7 @@ specific-app-logs/
 
 # Thư mục tạm thời cụ thể do ứng dụng tạo ra
 temp_data/
+
+.vscode/* 
+# Bỏ dòng dưới đây hoặc comment out nó:
+!.vscode/settings.json
