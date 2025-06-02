@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiSieuThiSach.Controllers
 {
     [ApiController]
-    [Route("api/web/[controller]")] // Route sẽ là /api/books
+    [Route("api/[controller]")] // Route sẽ là /api/books
     public class BooksController : ControllerBase
     {
         private readonly BookService _bookService;
@@ -18,7 +18,7 @@ namespace ApiSieuThiSach.Controllers
         }
 
         // POST: api/books
-        [HttpPost]
+        [HttpPost("web/create")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -39,7 +39,7 @@ namespace ApiSieuThiSach.Controllers
                 if (createdBook == null || string.IsNullOrEmpty(createdBook._idBooks))
                 {
                     _logger.LogError("Book creation failed in service for title: {BookTitle}", newBook.Title);
-                    return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<object>(StatusCodes.Status500InternalServerError, "Đã có lỗi xảy ra khi tạo sách.",null));
+                    return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<object>(StatusCodes.Status500InternalServerError, "Đã có lỗi xảy ra khi tạo sách.", null));
                 }
 
                 _logger.LogInformation("Đã thêm sách với số thứ tự: {BookId}", createdBook.DisplayBookId);
@@ -58,9 +58,40 @@ namespace ApiSieuThiSach.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled exception in CreateBook for title: {BookTitle}", newBook.Title);
-                return StatusCode(StatusCodes.Status500InternalServerError,new ApiResponse<object>(StatusCodes.Status500InternalServerError, "Đã có lỗi máy chủ xảy ra.",null));
+                return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<object>(StatusCodes.Status500InternalServerError, "Đã có lỗi máy chủ xảy ra.", null));
             }
         }
 
+
+        [HttpGet("getAllBooks")]
+        [ProducesResponseType(typeof(ApiResponse<List<Book>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllBooks()
+        {
+            try
+            {
+                _logger.LogInformation("Đang lấy danh sách sách...");
+                var books = await _bookService.GetAllBooksAsync();
+                if (books == null || books.Count == 0)
+                {
+                    _logger.LogInformation("Không tìm thấy sách nào.");
+                    return Ok(new ApiResponse<List<Book>>(StatusCodes.Status200OK, "Không có sách nào được tìm thấy.", new List<Book>()));
+                }
+                _logger.LogInformation("Đã lấy thành công danh sách sách.");
+                var apiResponse = new ApiResponse<List<Book>>(
+                    code: StatusCodes.Status200OK,
+                    message: "Danh sách sách đã được lấy thành công.",
+                    data: books
+                );
+                return Ok(apiResponse);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lấy danh sách sách");
+                return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<object>(StatusCodes.Status500InternalServerError, "Đã có lỗi máy chủ xảy ra khi lấy danh sách sách.", null));
+            }
+        } 
     }
+
+    
 }

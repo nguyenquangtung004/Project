@@ -11,7 +11,7 @@ namespace ApiSieuThiSach.sevice
         private readonly AuthorService _authorService;
         private readonly ILogger<BookService> _logger;
 
-        public BookService(IOptions<MongoDbSettings> mongoDbSettings,AuthorService authorService, ILogger<BookService> logger)
+        public BookService(IOptions<MongoDbSettings> mongoDbSettings, AuthorService authorService, ILogger<BookService> logger)
         {
             _logger = logger;
             _authorService = authorService;
@@ -46,7 +46,7 @@ namespace ApiSieuThiSach.sevice
                     _logger.LogWarning("Không tìm thấy tác giả với id : {AuthorId} cho sách :{Title}", item, newBook.Title);
                     return null;
                 }
-                    
+
             }
             try
             {
@@ -65,5 +65,22 @@ namespace ApiSieuThiSach.sevice
                 return null;
             }
         }
-    }    
+
+        public async Task<List<Book>> GetAllBooksAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Đang lấy danh sách bộ sách...");
+                var books = await _booksCollection.Find(Builders<Book>.Filter.Empty).ToListAsync();
+                return books;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lấy danh sách sách");
+                return new List<Book>();
+            }
+        }
+
+
+    }
 }

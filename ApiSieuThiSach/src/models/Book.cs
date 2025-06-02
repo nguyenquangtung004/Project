@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ApiSieuThiSach.models
 {
+    // [BsonIgnoreExtraElements]
     public class Book
     {
         [BsonId] 

@@ -77,5 +77,20 @@ namespace ApiSieuThiSach.sevice
             }
 
         }
+
+        public async Task<List<Author>> GetAllAuthorAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Đang lấy danh sách tác giả của bộ sách...");
+                var authors = await _authorsCollection.Find(Builders<Author>.Filter.Empty).ToListAsync();
+                return authors;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lấy danh sách tác giả");
+                return new List<Author>();
+            }
+        }
     }
 }

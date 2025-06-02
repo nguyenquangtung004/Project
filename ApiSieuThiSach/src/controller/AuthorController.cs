@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiSieuThiSach.Controllers
 {
     [ApiController]
-    [Route("api/web/[controller]")] // Route sẽ là /api/Authors
+    [Route("api/[controller]")] // Route sẽ là /api/Authors
     public class AuthorsController : ControllerBase
     {
         private readonly AuthorService _authorService;
@@ -20,7 +20,7 @@ namespace ApiSieuThiSach.Controllers
         }
 
         // POST: api/Authors
-        [HttpPost]
+        [HttpPost("web/create")]
         [ProducesResponseType(typeof(ApiResponse<Author>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
@@ -63,8 +63,8 @@ namespace ApiSieuThiSach.Controllers
             }
             catch (InvalidOperationException ex) // Bắt lỗi cụ thể nếu service ném ra (ví dụ: DisplayAuthorId đã tồn tại)
             {
-                 _logger.LogWarning(ex, "Lỗi nghiệp vụ khi tạo tác giả: {ErrorMessage}", ex.Message);
-                 return BadRequest(new ApiResponse<object>(StatusCodes.Status400BadRequest, ex.Message, null));
+                _logger.LogWarning(ex, "Lỗi nghiệp vụ khi tạo tác giả: {ErrorMessage}", ex.Message);
+                return BadRequest(new ApiResponse<object>(StatusCodes.Status400BadRequest, ex.Message, null));
             }
             catch (Exception ex)
             {
@@ -74,12 +74,34 @@ namespace ApiSieuThiSach.Controllers
             }
         }
 
-        // TODO: Thêm các endpoint khác như Get, GetById, Update, Delete cho Authors
-        // Ví dụ:
-        // [HttpGet("{id}", Name = "GetAuthorById")] // id ở đây là _idAuthors (ObjectId string)
-        // public async Task<IActionResult> GetAuthorById(string id)
-        // {
-        //     // Logic lấy tác giả theo _idAuthors
-        // }
+        [HttpGet("getAllAuthors")]
+        [ProducesResponseType(typeof(ApiResponse<List<Author>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllAuthors()
+        {
+            try
+            {
+                _logger.LogInformation("Đang lấy danh sách tất cả tác giả...");
+
+                var authors = await _authorService.GetAllAuthorAsync();
+
+                if (authors == null || authors.Count == 0)
+                {
+                    _logger.LogInformation("Không tìm thấy tác giả nào.");
+                    return Ok(new ApiResponse<List<Author>>(StatusCodes.Status200OK, "Không tìm thấy tác giả nào.", new List<Author>()));
+                }
+
+                _logger.LogInformation("Đã lấy thành công {Count} tác giả.", authors.Count);
+
+                return Ok(new ApiResponse<List<Author>>(StatusCodes.Status200OK, "Danh sách tác giả đã được lấy thành công.", authors));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lấy danh sách tác giả");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new ApiResponse<object>(StatusCodes.Status500InternalServerError, "Đã có lỗi máy chủ xảy ra khi lấy danh sách tác giả.", null));
+            }
+        }
+        
     }
 }
