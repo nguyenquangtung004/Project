@@ -28,7 +28,7 @@ namespace ApiSieuThiSach.Models
         public Guid? AccountSecurityId { get; set; }
         public Guid? AccountSessionId { get; set; }
 
-        public virtual UserProfile UserProfile { get; set; }
+        public virtual UsersProfile UsersProfile { get; set; }
         public virtual AccountSecurity AccountSecurity { get; set; }
         public virtual AccountSession AccountSession { get; set; }
     }

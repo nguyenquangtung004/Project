@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ApiSieuThiSach.Models
+namespace ApiSieuThiSach.models
 {
     public class Admin
     {

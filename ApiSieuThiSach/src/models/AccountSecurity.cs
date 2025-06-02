@@ -1,6 +1,6 @@
 using System;
 
-namespace AccountSecurity.Models
+namespace ApiSieuThiSach.Models
 {
     public class AccountSecurity
     {
